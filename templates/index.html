@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="AI Training Studio: ambiente de treinamento, ajuste fino e avaliação de modelos de inteligência artificial.">
+    <title>Pré-treino · AI Training Studio</title>
+    <!-- Mantido porque o JavaScript legado injeta e alterna classes utilitárias. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/finetuning.css?v=2">
+    <link rel="stylesheet" href="/static/pretraining.css?v=4">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="pretrain-page">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <aside class="sidebar">
+        <a class="brand" href="/">
+            <span class="brand-mark">AI</span>
+            <span><strong>AI Training Studio</strong></span>
+        </a>
+        <nav class="nav-stack" aria-label="Navegação principal">
+            <a class="active" href="/"><span>01</span>Pré-treino</a>
+            <a href="/finetuning"><span>02</span>Fine-tuning</a>
+            <a href="/compile"><span>03</span>Compilar</a>
+            <a href="/playground"><span>04</span>Playground</a>
+            <a href="/fundamentos"><span>05</span>Fundamentos</a>
+        </nav>
+        <div class="sidebar-foot">
+            <div class="engine-chip"><i></i><span>Engine</span><strong>PyTorch</strong></div>
+            <p>Controle e monitoramento do treinamento causal com quantização ternária simulada.</p>
+        </div>
+    </aside>
+
+    <main class="workspace">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">FOUNDATION MODEL PRE-TRAINING</p>
+                <h1>Monitoramento de Pré-treino</h1>
+            </div>
+            <div class="topbar-actions">
+                <span id="ws-status" class="connection offline"><i></i>Desconectado</span>
+                <span id="arch-chip" class="runtime-label" title="Arquitetura lida do .env / checkpoint">LENDO .ENV…</span>
+                <span id="kv-cache-chip" class="runtime-label">KV CACHE: LENDO…</span>
+            </div>
+        </header>
+
+        <section class="mission-panel pretrain-mission">
+            <div class="mission-copy">
+                <div class="status-line"><span class="state-badge">BASE</span><span>Controle isolado do pré-treinamento.</span></div>
+                <h2>Acompanhe métricas, valide checkpoints e controle o ciclo de vida do modelo em tempo real.</h2>
+                <p>checkpoints/base · métricas e inferência preservadas no mesmo pipeline</p>
+                <div id="control-status" class="control-status hidden" role="status"></div>
+            </div>
+            <div class="control-deck pretrain-controls" aria-label="Controles de pré-treinamento">
+                <button id="btn-start" class="control primary bg-blue-600 text-white"><span>▶</span>Iniciar</button>
+                <button id="btn-resume" class="control" disabled><span>↻</span>Retomar</button>
+                <button id="btn-stop" class="control danger bg-gray-800 text-red-400" disabled><span>Ⅱ</span>Pausar</button>
+                <button id="btn-checkpoint" class="control wide"><span>↓</span>Criar checkpoint</button>
+            </div>
+        </section>
+
+        <section class="kpi-grid pretrain-kpis" aria-label="Indicadores do pré-treino">
+            <article class="kpi accent-pink"><span>VRAM alocada</span><strong><b id="stat-vram">0</b></strong><small>megabytes</small></article>
+            <article class="kpi accent-lime"><span>Throughput</span><strong id="stat-tps">0</strong><small>tokens / segundo</small></article>
+            <article class="kpi accent-violet"><span>Velocidade</span><strong id="stat-bps">0</strong><small>batches / segundo</small></article>
+            <article class="kpi accent-orange"><span>Tokens consumidos</span><strong id="stat-tokens">0</strong><small>total contabilizado</small></article>
+            <article class="kpi accent-cyan"><span>Micro steps</span><strong id="stat-steps">0</strong><small>passos executados</small></article>
+            <article class="kpi accent-blue"><span>Learning rate</span><strong id="stat-lr">0</strong><small>scheduler ativo</small></article>
+        </section>
+
+        <section class="panel milestone-panel">
+            <div class="panel-heading">
+                <div><span class="panel-index">01</span><h3>Marcos de tokens</h3></div>
+                <span class="live-dot">ROADMAP</span>
+            </div>
+            <p id="milestones-summary" class="milestones-summary">Aguardando métricas para calcular previsão...</p>
+            <div id="milestones-container" class="milestones-container"></div>
+        </section>
+
+        <section class="pretrain-dashboard">
+            <article class="panel chart-panel chart-featured">
+                <div class="panel-heading"><div><span class="panel-index">02</span><h3>Evolução da loss</h3></div><span class="live-dot">LIVE</span></div>
+                <div class="chart-wrap chart-large"><canvas id="chart-loss"></canvas></div>
+            </article>
+
+            <article class="panel prediction-panel">
+                <div class="panel-heading"><div><span class="panel-index">03</span><h3>Previsões em tempo real</h3></div><span class="mini-badge">TOP-5</span></div>
+                <div class="prediction-block"><span>Contexto fornecido</span><div id="context-text" class="prediction-value context-value">Aguardando dados...</div></div>
+                <div class="prediction-block"><span>Token alvo esperado</span><div id="target-token" class="prediction-value target-value">Aguardando dados...</div></div>
+                <div class="prediction-block prediction-list-block"><span>Ranking de previsões</span><div id="predictions-list" class="predictions-list"><div class="prediction-empty">Inicie o treinamento para visualizar as previsões.</div></div></div>
+            </article>
+
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">04</span><h3>Acurácia Top-K</h3></div></div><div class="chart-wrap"><canvas id="chart-acc"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">05</span><h3>Norma do gradiente</h3></div></div><div class="chart-wrap"><canvas id="gradChart"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">06</span><h3>Training vs. validation loss</h3></div></div><div class="chart-wrap"><canvas id="chart-val-loss"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">07</span><h3>Perplexidade</h3></div></div><div class="chart-wrap"><canvas id="chart-perplexity"></canvas></div></article>
+            <article class="panel chart-panel" id="ternary-panel"><div class="panel-heading"><div><span class="panel-index">08</span><h3>Distribuição ternária</h3></div><span class="mini-badge">−1 · 0 · +1</span></div><div class="ternary-readout" id="ternary-readout"><span class="t-neg"><i></i>−1 <b>0%</b></span><span class="t-zero"><i></i>0 <b>0%</b></span><span class="t-pos"><i></i>+1 <b>0%</b></span></div><div class="chart-wrap"><canvas id="chart-ternary"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">09</span><h3>RMSE & firing rate</h3></div></div><div class="chart-wrap"><canvas id="chart-rmse-firing"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">10</span><h3>Evolução da resolução</h3></div></div><div class="chart-wrap"><canvas id="chart-resolution"></canvas></div></article>
+            <article class="panel chart-panel">
+                <div class="panel-heading"><div><span class="panel-index">11</span><h3>Learning rate schedule</h3></div><button id="btn-lr-overlay" class="mini-action" title="Sobrepor Loss no gráfico de LR">Sobrepor loss</button></div>
+                <div class="chart-wrap"><canvas id="chart-lr"></canvas></div>
+            </article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">12</span><h3>Norma dos pesos</h3></div></div><div class="chart-wrap"><canvas id="chart-weight-norm"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">13</span><h3>Entropia dos logits</h3></div><span class="mini-badge">CONFIANÇA</span></div><div class="chart-wrap"><canvas id="chart-entropy"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">14</span><h3>Loss · média móvel (EMA)</h3></div><span class="mini-badge">CSV · 500 / 5000</span></div><div class="chart-wrap"><canvas id="chart-ema"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">15</span><h3>Perplexidade · média móvel (EMA)</h3></div><span class="mini-badge">CSV · 500 / 5000</span></div><div class="chart-wrap"><canvas id="chart-ppl-ema"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">16</span><h3>Top-1 · média móvel (EMA)</h3></div><span class="mini-badge">CSV · 500 / 5000</span></div><div class="chart-wrap"><canvas id="chart-top1-ema"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="panel-index">17</span><h3>Entropia dos logits · média móvel (EMA)</h3></div><span class="mini-badge">CSV · 500 / 5000</span></div><div class="chart-wrap"><canvas id="chart-ent-ema"></canvas></div></article>
+        </section>
+
+        <section class="inference-studio">
+            <div class="inference-intro">
+                <p class="eyebrow">VALIDAÇÃO DO MODELO BASE</p>
+                <h2>Validação interativa do modelo base.</h2>
+                <p>Gere texto com o modelo base e ajuste os parâmetros de amostragem e o dispositivo de execução.</p>
+                <div class="inference-settings">
+                    <label>Max tokens<input type="number" id="infer-max-tokens" value="50" min="1"></label>
+                    <label>Modo<select id="infer-sampling-mode"><option value="auto">Automático</option><option value="greedy">Greedy determinístico</option><option value="sample">Sampling manual</option></select></label>
+                    <label>Temperatura<input type="number" id="infer-temp" value="0" min="0" max="2" step="0.1"></label>
+                    <label>Top-P<input type="number" id="infer-top-p" value="0.9" min="0.1" max="1" step="0.05"></label>
+                    <label>Device<select id="infer-device"><option value="cuda">CUDA (GPU)</option><option value="cpu">CPU</option></select></label>
+                </div>
+            </div>
+            <div class="inference-console">
+                <div class="console-head"><div><i></i><span>Base inference</span></div><span id="infer-status" class="hidden">Gerando...</span></div>
+                <label class="console-label" for="infer-prompt">Prompt de entrada</label>
+                <textarea id="infer-prompt" rows="5" placeholder="Escreva algo para o modelo continuar..."></textarea>
+                <button id="btn-infer" class="infer-action">Gerar texto <span>↗</span></button>
+                <div class="result-head"><span>Resultado</span><small>streaming</small></div>
+                <div id="infer-result" class="inference-result">O texto gerado aparecerá aqui...</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/script.js?v=12"></script>
+</body>
+</html>

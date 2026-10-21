@@ -1,0 +1,43 @@
+name: retbit-dashboard
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: retbit-dashboard
+    init: true
+    restart: unless-stopped
+    working_dir: /workspace
+    ports:
+      - "8000:8000"
+    ipc: host
+    shm_size: "8gb"
+    stop_grace_period: 2m
+    env_file:
+      - path: .env
+        required: false
+      - path: .env.local
+        required: false
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONPATH: /workspace
+      HF_HOME: /workspace/.cache/huggingface
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+      LLAMA_CPP_SERVER: /opt/retbit-runtimes/llama-server
+      LLAMA_CPP_CLI: /opt/retbit-runtimes/llama-cli
+      BITNET_CPP_SERVER: /opt/retbit-runtimes/bitnet-server
+      BITNET_CPP_CLI: /opt/retbit-runtimes/bitnet-cli
+      RETBIT_CPP_CLI: /opt/retbit-runtimes/retbit-cli
+    volumes:
+      - type: bind
+        source: .
+        target: /workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

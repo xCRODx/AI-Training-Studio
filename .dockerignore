@@ -1,0 +1,26 @@
+.git
+.gitignore
+.cache
+.pytest_cache
+**/__pycache__
+*.py[cod]
+*.pyd
+.env
+.env.local
+.venv
+venv
+tests
+error_ignore_index.log
+
+# O checkpoint real entra por bind mount em runtime, nunca no contexto da imagem.
+/model.safetensor
+/optimizer.pt
+/scheduler.pt
+/config.json
+/training_metrics.csv
+/checkpoints*/
+/artifacts/
+/data/
+/runtime/**/build*/
+*.partial
+.retbit-training.lock

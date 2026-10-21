@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aprenda os fundamentos de inteligência artificial, aprendizado de máquina, redes neurais e modelos de linguagem.">
+    <title>Fundamentos · AI Training Studio</title>
+    <link rel="stylesheet" href="/static/finetuning.css?v=2">
+    <link rel="stylesheet" href="/static/fundamentos.css?v=2">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+</head>
+<body class="fundamentos-page">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <aside class="sidebar">
+        <a class="brand" href="/">
+            <span class="brand-mark">AI</span>
+            <span><strong>AI Training Studio</strong></span>
+        </a>
+        <nav class="nav-stack" aria-label="Navegação principal">
+            <a href="/"><span>01</span>Pré-treino</a>
+            <a href="/finetuning"><span>02</span>Fine-tuning</a>
+            <a href="/compile"><span>03</span>Compilar</a>
+            <a href="/playground"><span>04</span>Playground</a>
+            <a class="active" href="/fundamentos"><span>05</span>Fundamentos</a>
+        </nav>
+        <div class="sidebar-foot">
+            <div class="engine-chip"><i></i><span>Modo</span><strong>Estudo</strong></div>
+            <p>Conceitos, matemática e arquitetura explicados do zero, sem atalhos.</p>
+        </div>
+    </aside>
+
+    <main class="workspace">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">INTELIGÊNCIA ARTIFICIAL, DO BÁSICO À PRÁTICA</p>
+                <h1>Fundamentos</h1>
+            </div>
+            <div class="topbar-actions">
+                <span class="runtime-label">IA · MACHINE LEARNING · DEEP LEARNING</span>
+            </div>
+        </header>
+
+        <section class="fundamentos-lead">
+            <div>
+                <h2>Como uma rede neural pensa, aprende e armazena conhecimento.</h2>
+                <p>Uma trilha progressiva sobre dados, matemática, redes neurais, modelos de linguagem e arquiteturas como Transformer, BitNet e RetNet. Cada tópico combina explicações claras, exemplos, código e diagramas para conectar a teoria à prática.</p>
+            </div>
+            <div class="fundamentos-search">
+                <label for="docs-search">Buscar nos tópicos</label>
+                <div class="search-shell">
+                    <span class="search-icon">⌕</span>
+                    <input id="docs-search" type="search" placeholder="ex.: gradiente, atenção, softmax, AdamW..." autocomplete="off" spellcheck="false">
+                    <kbd id="search-count" class="hidden"></kbd>
+                </div>
+            </div>
+        </section>
+
+        <section id="docs-root" class="docs-root" aria-label="Índice de tópicos">
+            <div class="docs-loading">
+                <span class="loader-dot"></span>
+                <p>Carregando índice...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/fundamentos.js?v=2"></script>
+</body>
+</html>

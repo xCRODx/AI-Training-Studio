@@ -1,0 +1,47 @@
+# Segredos e configuração local
+.env
+.env.local
+
+# Checkpoint legado na raiz
+/model.safetensor
+/optimizer.pt
+/scheduler.pt
+/config.json
+/training_metrics.csv
+/.retbit-training.lock
+
+# Modelos, checkpoints, artefatos e datasets locais
+/checkpoints*/
+/artifacts/
+/data/
+*.safetensors
+*.gguf
+*.pt
+*.partial
+
+# Builds nativos
+/runtime/**/build*/
+/runtime/**/*.exe
+/runtime/**/*.dll
+/runtime/**/*.lib
+/runtime/**/*.pdb
+
+# Python e ferramentas
+.cache/
+.pytest_cache/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs e logs locais
+.vscode/
+.idea/
+*.swp
+*.swo
+error_ignore_index.log

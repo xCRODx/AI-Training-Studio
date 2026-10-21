@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compilação · AI Training Studio</title><link rel="stylesheet" href="/static/finetuning.css?v=1">
+</head>
+<body>
+    <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+    <aside class="sidebar">
+        <a class="brand" href="/"><span class="brand-mark">AI</span><span><strong>AI Training Studio</strong></span></a>
+        <nav class="nav-stack"><a href="/"><span>01</span>Pré-treino</a><a href="/finetuning"><span>02</span>Fine-tuning</a><a class="active" href="/compile"><span>03</span>Compilar</a><a href="/playground"><span>04</span>Playground</a><a href="/fundamentos"><span>05</span>Fundamentos</a></nav>
+        <div class="sidebar-foot"><div class="engine-chip"><i></i><span>Runtime</span><strong id="target-chip">C++ nativo</strong></div><div class="engine-chip"><i></i><span>Memória</span><strong id="compile-kv-cache">lendo…</strong></div><p id="target-foot">Conversão GGUF e execução isoladas dos checkpoints de treinamento.</p></div>
+    </aside>
+    <main class="workspace">
+        <header class="topbar"><div><p class="eyebrow">MODEL DELIVERY PIPELINE</p><h1>Pipelines de Compilação</h1></div><div class="topbar-actions"><span id="compile-status" class="connection offline"><i></i>Inspecionando</span></div></header>
+        <section class="page-lead"><div><p class="eyebrow">FINE-TUNING → RUNTIME</p><h2>Exporte, valide e prepare modelos para inferência otimizada.</h2><p>O pipeline utiliza o checkpoint de fine-tuning publicado como fonte de compilação.</p></div><span id="route-status" class="route-status">Preflight pendente</span></section>
+        <section class="compile-grid">
+            <article class="panel source-card">
+                <div class="panel-heading"><div><span class="panel-index">01</span><h3>Fonte autorizada</h3></div><span id="source-badge" class="mini-badge">ausente</span></div>
+                <div id="source-path" class="source-path">checkpoints_finetuning/base_finetuning</div>
+                <div class="source-meta"><div><span>Parâmetros</span><strong id="source-params">—</strong></div><div><span>Tensores</span><strong id="source-tensors">—</strong></div><div><span>Tamanho</span><strong id="source-size">—</strong></div></div>
+            </article>
+            <article class="panel">
+                <div class="panel-heading"><div><span class="panel-index">02</span><h3>Preflight</h3></div><span class="mini-badge">Windows x86-64</span></div>
+                <div id="check-list" class="check-list"></div>
+                <div id="compile-blocker" class="blocker">Aguardando diagnóstico...</div>
+                <div class="build-actions"><button id="btn-compile" class="primary-action" disabled>Compilar modelo</button><button id="btn-refresh">Atualizar</button></div>
+            </article>
+            <article class="panel full">
+                <div class="panel-heading"><div><span class="panel-index">03</span><h3>Pipeline de entrega</h3></div><span id="pipeline-arch" class="mini-badge">lendo .env…</span></div>
+                <div class="runtime-diagram"><div class="runtime-node"><span>Fonte</span><strong>Checkpoint SFT</strong></div><div class="runtime-node"><span>Conversão</span><strong id="diagram-format">GGUF v3</strong></div><div class="runtime-node"><span>Representação</span><strong id="diagram-quant">Definida pela arquitetura</strong></div><div class="runtime-node"><span>Destino</span><strong id="diagram-target">Runtime nativo</strong></div></div>
+            </article>
+            <article class="panel full">
+                <div class="panel-heading"><div><span class="panel-index">04</span><h3>Artefatos disponíveis</h3></div><span id="artifact-count" class="mini-badge">0 modelos</span></div>
+                <div id="artifact-list" class="artifact-list"><div class="empty-row">Nenhum modelo compilado.</div></div>
+            </article>
+        </section>
+    </main>
+    <div id="toast" class="toast"></div><script src="/static/compile.js?v=3"></script>
+</body>
+</html>

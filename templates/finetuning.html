@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="AI Training Studio: ajuste fino supervisionado e avaliação de modelos de inteligência artificial.">
+    <title>Fine-tuning · AI Training Studio</title>
+    <link rel="stylesheet" href="/static/finetuning.css?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <aside class="sidebar">
+        <a class="brand" href="/">
+            <span class="brand-mark">AI</span>
+            <span><strong>AI Training Studio</strong></span>
+        </a>
+        <nav class="nav-stack" aria-label="Navegação principal">
+            <a href="/"><span>01</span>Pré-treino</a>
+            <a class="active" href="/finetuning"><span>02</span>Fine-tuning</a>
+            <a href="/compile"><span>03</span>Compilar</a>
+            <a href="/playground"><span>04</span>Playground</a>
+            <a href="/fundamentos"><span>05</span>Fundamentos</a>
+        </nav>
+        <div class="sidebar-foot">
+            <div class="engine-chip"><i></i><span>Engine</span><strong id="engine-name">local</strong></div>
+            <div class="engine-chip arch-chip"><i></i><span>Arquitetura</span><strong id="architecture-name">lendo .env…</strong></div>
+            <div class="engine-chip"><i></i><span>Memória</span><strong id="finetuning-kv-cache">lendo…</strong></div>
+            <p>O pós-treino usa sempre a mesma arquitetura do pré-treino.</p>
+        </div>
+    </aside>
+
+    <main class="workspace">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">SUPERVISED FINE-TUNING</p>
+                <h1>Monitoramento de Fine-Tuning</h1>
+            </div>
+            <div class="topbar-actions">
+                <span id="connection-badge" class="connection offline"><i></i>Telemetria offline</span>
+                <time id="clock">--:--:--</time>
+            </div>
+        </header>
+
+        <section class="mission-panel">
+            <div class="mission-copy">
+                <div class="status-line">
+                    <span id="state-badge" class="state-badge state-idle">IDLE</span>
+                    <span id="status-message">Fine-tuning pronto para inicialização.</span>
+                </div>
+                <h2>Acompanhamento do ajuste fino supervisionado e evolução da curva de aprendizado.</h2>
+                <p id="model-path">Aguardando inspeção de base_finetuning...</p>
+            </div>
+            <div class="control-deck" aria-label="Controles de fine-tuning">
+                <div class="method-selector">
+                    <label for="fine-tuning-method">Método de ajuste</label>
+                    <select id="fine-tuning-method"><option value="full">Full fine-tuning</option><option value="lora">LoRA</option></select>
+                    <div id="lora-options" class="lora-options" hidden>
+                        <label>Rank<input id="lora-rank" type="number" min="1" max="1024" value="16"></label>
+                        <label>Alpha<input id="lora-alpha" type="number" min="0.1" max="8192" step="0.1" value="32"></label>
+                        <label>Dropout<input id="lora-dropout" type="number" min="0" max="0.99" step="0.01" value="0.05"></label>
+                        <label class="wide">Módulos-alvo<input id="lora-target-modules" type="text" value="q_proj,k_proj,v_proj,out_proj,g_proj,gate_proj,up_proj,down_proj,fc1,fc2"></label>
+                    </div>
+                    <small>Full mantém o fluxo atual. LoRA usa uma pasta separada no mesmo volume compartilhado.</small>
+                </div>
+                <button id="btn-start" class="control primary"><span>▶</span>Iniciar</button>
+                <button id="btn-resume" class="control"><span>↻</span>Retomar</button>
+                <button id="btn-pause" class="control"><span>Ⅱ</span>Pausar</button>
+                <button id="btn-stop" class="control danger"><span>■</span>Parar</button>
+                <button id="btn-checkpoint" class="control wide"><span>↓</span>Publicar checkpoint</button>
+            </div>
+        </section>
+
+        <section class="progress-shell" aria-label="Progresso do treinamento">
+            <div class="progress-meta"><span>Progresso total</span><strong id="progress-value">0.0%</strong></div>
+            <div class="progress-track"><div id="progress-bar"></div></div>
+            <div class="progress-foot"><span id="epoch-value">Epoch 0 / 0</span><span id="eta-value">ETA —</span></div>
+        </section>
+
+        <section class="kpi-grid">
+            <article class="kpi accent-lime"><span>Train loss</span><strong id="kpi-loss">—</strong><small id="kpi-loss-trend">sem amostras</small></article>
+            <article class="kpi accent-cyan"><span>Validation loss</span><strong id="kpi-val-loss">—</strong><small id="kpi-gap">gap —</small></article>
+            <article class="kpi accent-violet"><span>Perplexidade</span><strong id="kpi-perplexity">—</strong><small>assistant-only</small></article>
+            <article class="kpi accent-orange"><span>Top-1 accuracy</span><strong id="kpi-accuracy">—</strong><small id="kpi-top5">top-5 —</small></article>
+            <article class="kpi accent-blue"><span>Throughput</span><strong id="kpi-throughput">—</strong><small>tokens / segundo</small></article>
+            <article class="kpi accent-pink"><span>GPU / VRAM</span><strong id="kpi-gpu">—</strong><small id="kpi-vram">0 MB alocados</small></article>
+        </section>
+
+        <section class="dashboard-grid">
+            <article class="panel chart-panel span-2">
+                <div class="panel-heading"><div><span class="panel-index">01</span><h3>Curva de aprendizagem</h3></div><span class="live-dot">LIVE</span></div>
+                <div class="chart-wrap chart-large"><canvas id="loss-chart"></canvas></div>
+            </article>
+
+            <article class="panel health-panel">
+                <div class="panel-heading"><div><span class="panel-index">02</span><h3>Saúde do treino</h3></div></div>
+                <div class="health-ring" id="health-ring"><div><strong id="health-score">—</strong><span>score</span></div></div>
+                <ul class="signal-list">
+                    <li><span>Loss</span><strong id="signal-loss">aguardando</strong></li>
+                    <li><span>Generalização</span><strong id="signal-generalization">aguardando</strong></li>
+                    <li><span>Gradientes</span><strong id="signal-gradients">aguardando</strong></li>
+                    <li><span>Hardware</span><strong id="signal-hardware">aguardando</strong></li>
+                </ul>
+            </article>
+
+            <article class="panel chart-panel">
+                <div class="panel-heading"><div><span class="panel-index">03</span><h3>Precisão de tokens</h3></div></div>
+                <div class="chart-wrap"><canvas id="accuracy-chart"></canvas></div>
+            </article>
+
+            <article class="panel chart-panel">
+                <div class="panel-heading"><div><span class="panel-index">04</span><h3>Otimização</h3></div></div>
+                <div class="chart-wrap"><canvas id="optimization-chart"></canvas></div>
+            </article>
+
+            <article class="panel chart-panel">
+                <div class="panel-heading"><div><span class="panel-index">05</span><h3>Memória e compute</h3></div></div>
+                <div class="chart-wrap"><canvas id="hardware-chart"></canvas></div>
+            </article>
+
+            <article class="panel data-panel">
+                <div class="panel-heading"><div><span class="panel-index">06</span><h3>Dataset clean room</h3></div><span id="dataset-badge" class="mini-badge">não preparado</span></div>
+                <p id="dataset-name" class="dataset-name">—</p>
+                <div class="data-meter"><div><span>Tokens supervisionados</span><strong id="supervised-ratio">—</strong></div><div class="meter-track"><i id="supervised-bar"></i></div></div>
+                <div class="data-stats">
+                    <div><span>Amostras treino</span><strong id="data-train">—</strong></div>
+                    <div><span>Amostras validação</span><strong id="data-val">—</strong></div>
+                    <div><span>Descartados</span><strong id="data-rejected">—</strong></div>
+                    <div><span>Duplicados</span><strong id="data-duplicates">—</strong></div>
+                    <div><span>Pares completos</span><strong id="data-pairs">—</strong></div>
+                    <div><span>Prompts preservados</span><strong id="data-preserved">—</strong></div>
+                    <div><span>Conversas divididas</span><strong id="data-split">—</strong></div>
+                    <div><span>Truncamentos</span><strong id="data-truncated">—</strong></div>
+                </div>
+            </article>
+
+            <article class="panel ternary-panel" id="ternary-panel">
+                <div class="panel-heading"><div><span class="panel-index">07</span><h3>Estado ternário</h3></div></div>
+                <div class="ternary-layout">
+                    <div class="chart-wrap chart-donut"><canvas id="ternary-chart"></canvas></div>
+                    <div class="ternary-legend">
+                        <p><i class="neg"></i><span>-1</span><strong id="ternary-neg">0%</strong></p>
+                        <p><i class="zero"></i><span>0</span><strong id="ternary-zero">0%</strong></p>
+                        <p><i class="pos"></i><span>+1</span><strong id="ternary-pos">0%</strong></p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="lower-grid">
+            <article class="panel checkpoint-panel">
+                <div class="panel-heading"><div><span class="panel-index">08</span><h3>Checkpoints SFT</h3></div><span id="checkpoint-count" class="mini-badge">0 salvos</span></div>
+                <div class="table-shell">
+                    <table>
+                        <thead><tr><th>Checkpoint</th><th>Step</th><th>Epoch</th><th>Tamanho</th><th>Status</th></tr></thead>
+                        <tbody id="checkpoint-table"><tr><td colspan="5" class="empty-row">Nenhum checkpoint publicado.</td></tr></tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="panel config-panel">
+                <div class="panel-heading"><div><span class="panel-index">09</span><h3>Configuração ativa</h3></div><span class="mini-badge">.env</span></div>
+                <dl id="config-list"><div><dt>Carregando</dt><dd>—</dd></div></dl>
+            </article>
+        </section>
+
+        <section class="chat-studio">
+            <div class="chat-intro">
+                <p class="eyebrow">VALIDAÇÃO EM TEMPO REAL</p>
+                <h2>Validação interativa do último checkpoint salvo.</h2>
+                <p>O chat usa um snapshot somente leitura de <code>base_finetuning</code>, mantendo o treino protegido.</p>
+                <div class="chat-parameters">
+                    <label>Modo<select id="chat-sampling-mode"><option value="auto">Automático</option><option value="greedy">Greedy determinístico</option><option value="sample">Sampling manual</option></select></label>
+                    <label>Temperatura<input id="chat-temperature" type="range" min="0" max="2" value="0" step="0.05"><output id="temperature-value">AUTO</output></label>
+                    <label>Top-P<input id="chat-top-p" type="range" min="0.05" max="1" value="1" step="0.05"><output id="top-p-value">1.00</output></label>
+                    <label>Max tokens<input id="chat-max-tokens" type="number" min="1" value="64"></label>
+                    <label>Repetition penalty<input id="chat-repetition" type="number" min="0.5" max="2" value="1" step="0.05"></label>
+                </div>
+            </div>
+            <div class="chat-window">
+                <div class="chat-head"><div><i></i><span>Snapshot chat</span></div><button id="btn-clear-chat">Limpar histórico</button></div>
+                <div id="chat-messages" class="chat-messages">
+                    <div class="chat-empty"><strong>Pronto para conversar</strong><span>Inicie o fine-tuning e envie uma mensagem.</span></div>
+                </div>
+                <form id="chat-form" class="chat-composer">
+                    <textarea id="chat-input" rows="1" placeholder="Digite uma mensagem para o modelo..." aria-label="Mensagem"></textarea>
+                    <button id="btn-send-chat" type="submit">Enviar <span>↗</span></button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+    <script src="/static/finetuning.js?v=4"></script>
+</body>
+</html>

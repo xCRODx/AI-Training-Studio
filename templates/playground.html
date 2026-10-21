@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Playground · AI Training Studio</title><link rel="stylesheet" href="/static/finetuning.css?v=1"></head>
+<body>
+    <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+    <aside class="sidebar">
+        <a class="brand" href="/"><span class="brand-mark">AI</span><span><strong>AI Training Studio</strong></span></a>
+        <nav class="nav-stack"><a href="/"><span>01</span>Pré-treino</a><a href="/finetuning"><span>02</span>Fine-tuning</a><a href="/compile"><span>03</span>Compilar</a><a class="active" href="/playground"><span>04</span>Playground</a><a href="/fundamentos"><span>05</span>Fundamentos</a></nav>
+        <div class="sidebar-foot"><div class="engine-chip"><i></i><span>Runtime</span><strong id="pg-target-chip">C++ nativo</strong></div><div class="engine-chip"><i></i><span>Memória</span><strong id="pg-kv-cache">lendo…</strong></div><p>Use um modelo compilado e validado ou um snapshot PyTorch compatível.</p></div>
+    </aside>
+    <main class="workspace">
+        <header class="topbar"><div><p class="eyebrow">COMPILED INFERENCE</p><h1>Playground</h1></div><div class="topbar-actions"><span id="runtime-status" class="connection offline"><i></i>Runtime indisponível</span></div></header>
+        <section class="playground-shell">
+            <aside class="playground-controls">
+                <h3>Runtime controls</h3>
+                <div class="runtime-card"><span>Modelo ativo</span><strong id="active-model">Nenhum</strong><small id="active-model-size">Compile um checkpoint SFT</small></div>
+                <div class="settings-stack">
+                    <label>Artefato<select id="artifact-select" disabled><option>Nenhum modelo</option></select></label>
+                    <label>Dispositivo<select id="pg-device" disabled><option value="cpu">CPU · runtime C++ nativo</option><option value="cuda">GPU · verificando CUDA</option></select></label>
+                    <div class="runtime-load"><button id="pg-load" type="button" disabled>↻ Carregar modelo</button><span id="load-state" class="load-state">Não carregado</span></div>
+                    <label>Modo<select id="pg-sampling-mode"><option value="auto">Automático</option><option value="greedy">Greedy determinístico</option><option value="sample">Sampling manual</option></select></label>
+                    <label>Temperatura <output id="pg-temp-output">AUTO</output><input id="pg-temperature" type="range" min="0" max="2" value="0" step="0.05"></label>
+                    <label>Top-P <output id="pg-top-p-output">0.90</output><input id="pg-top-p" type="range" min="0.05" max="1" value="0.9" step="0.05"></label>
+                    <label>Top-K<input id="pg-top-k" type="number" min="0" max="1000" value="50"></label>
+                    <label>Max tokens<input id="pg-max-tokens" type="number" min="1" value="128"></label>
+                    <label>Threads CPU<input id="pg-threads" type="number" min="1" max="128" value="12"></label>
+                    <label>Seed<input id="pg-seed" type="number" value="42"></label>
+                </div>
+            </aside>
+            <div class="playground-main">
+                <header class="playground-head"><div><strong>Compiled conversation</strong><p>Histórico armazenado apenas neste dispositivo.</p></div><button id="pg-clear" class="control">Limpar</button></header>
+                <div id="pg-messages" class="playground-messages"><div class="locked-state"><div class="lock-orbit">AI</div><h3>Playground bloqueado</h3><p>Finalize ou pause o fine-tuning e prepare um modelo compatível para iniciar a conversa.</p><a class="link-button" href="/compile">Ir para Compilar</a></div></div>
+                <form id="pg-form" class="playground-composer"><textarea id="pg-input" rows="2" placeholder="Digite uma mensagem para o modelo residente..." disabled></textarea><button id="pg-send" disabled>Enviar ↗</button></form>
+            </div>
+        </section>
+    </main>
+    <div id="toast" class="toast"></div><script src="/static/playground.js?v=5"></script>
+</body>
+</html>

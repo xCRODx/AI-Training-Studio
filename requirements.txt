@@ -1,0 +1,13 @@
+torch
+transformers
+fastapi
+uvicorn
+websockets
+python-dotenv
+datasets
+pydantic-settings
+pydantic
+safetensors
+sentencepiece==0.2.1
+gguf==0.19.0
+bitsandbytes
